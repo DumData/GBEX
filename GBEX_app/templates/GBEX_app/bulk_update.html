@@ -1,0 +1,19 @@
+{% load widget_tweaks %}
+{% csrf_token %}
+
+{{ forms.management_form }}
+{% for form in forms %}
+    {% for fi in form.visible_fields %}
+        <div class="form-group {% if fi.errors %}has-error{% endif %}">
+            <label class="col-md-6 control-label" for="{{ fi.auto_id }}">{{ form.instance.name }}: {{ fi.label }}</label>
+            <div class="col-md-6">
+                {% render_field fi class+="form-control" rows="1" %}
+                <span id="helpBlock2" class="help-block">{{fi.errors}}</span>
+            </div>
+        </div>
+    {% endfor %}
+    {% for field in form.hidden_fields %}
+        {{ field }}
+    {% endfor %}
+{% endfor %}
+{{ forms.media }}

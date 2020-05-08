@@ -1,0 +1,159 @@
+{% extends 'GBEX_app/app_base.html' %}
+{% load laeb_tags %}
+{% load static %}
+
+{% block page_css_block %}
+    <link href="{% static 'admin/css/vendor/select2/select2.min.css' %}" type="text/css" media="all" rel="stylesheet">
+    <link href="{% static 'autocomplete_light/select2.css' %}" type="text/css" media="all" rel="stylesheet">
+    <link href="{% static 'GBEX_app/select2-bootstrap.css' %}" rel="stylesheet">
+{% endblock %}
+{% block page_header_js_block %}
+    <script type="text/javascript" src="{% static 'autocomplete_light/jquery.init.js' %}"></script>
+    <script type="text/javascript" src="{% static 'autocomplete_light/autocomplete.init.js' %}"></script>
+    <script type="text/javascript" src="{% static 'admin/js/vendor/select2/select2.full.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'autocomplete_light/forward.js' %}"></script>
+    <script type="text/javascript" src="{% static 'autocomplete_light/select2.js' %}"></script>
+    <script>
+        var django = {
+        "jQuery": jQuery.noConflict(true)
+        };
+        var jQuery = django.jQuery;
+        var $=jQuery;
+    </script>
+    <script type="text/javascript" src="{% static 'GBEX_bigfiles/js/resumable.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div id="root" />{% csrf_token %}
+{% endblock %}
+{% block page_js_block %}
+    <script>
+        var createurl = "{% url 'create_'|add:model_name %}";
+        var columns = {{ model_order|safe }};
+        var data = {{ data|safe }};
+        var whodis = "{{ model_name }}";
+        var table_settings = {{ table_settings|safe }};
+        var column_widths = "column_widths";    //table_settings variable name
+        var column_shows = "column_shows";      //table_settings variable name
+        var settings_id = {{ settings_id }};
+        var user_id = {{ request.user.id }};
+        var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+
+        //this is for bulk update
+        function bulk_text_apply() {
+            const inps = $(":input[name]:visible", $("#bulk_form_set_form")); //get all visible inputs with a name in bulk form
+            const text_array = $('#formBasicText').val().split(/\r?\n/); //get the line seperated text form the text form
+
+            // loop over form elements and handle each one individually
+            for (let i=0; i<inps.length; i++) {
+                let this_form_el = $(inps[i]);  //get this form element
+                let ajaxurl = this_form_el.attr("data-autocomplete-light-url"); //if there is an ajaxurl its a select2 widget
+                if (typeof ajaxurl !== typeof undefined && ajaxurl !== false) {
+                    //its a select2
+                    let ismultiple = this_form_el.attr("multiple");
+                    if (typeof ismultiple !== typeof undefined && ismultiple !== false) {
+                        //its multi select
+                        //split line by comma
+                        let line_elements = text_array[i].split(/[\s,]+/);
+                        //loop over each line element and save the results
+                        let line_res = [];
+                        let ajax_calls = []; // store the ajax call promises so that we can continue once they all resolve
+                        line_elements.forEach(function(el, eli) {
+                            ajax_calls.push($.ajax({url:ajaxurl, data:"q="+el}).done(function(data) {
+                                if (data['results'].length==0) {
+                                    alert("Error on line " + i+1 + ", element #" + eli+1 + " : " + el + ". Item not found in database.");
+                                } else {
+                                    // there may be multiple results. Loop through for an exact match and if not found error out
+                                    let fdata = data['results'].filter(function(res) { return res['text'] == el });
+                                    if (fdata.length!=1) {
+                                        alert("Error on line " + i+1 + ", element #" + eli+1 + " : " + el + ". No exact hit in database.");
+                                    } else {
+                                        // Everything looks good so save it
+                                        line_res.push(fdata[0])
+                                    }
+                                }
+                            }))
+                        });
+                        $.when.apply($, ajax_calls).then(function() {
+                            // now add line_res as options
+                            let value_setting = [];
+                            this_form_el.empty();
+
+                            line_res.forEach(function(el) {
+                                this_form_el.append($("<option/>").attr("value", el['id']).text(el['text']));
+                                value_setting.push(el['id'])
+                            });
+                            this_form_el.val(value_setting);
+                        });
+
+                    } else {
+                        //its not multi select
+                        $.ajax({url:ajaxurl, data:"q="+text_array[i]}).done(function(data) {
+                            if (data['results'].length==0) {
+                                alert("Error on line " + i+1 + ": " + text_array[i] + ". Item not found in database.");
+                            } else {
+                                // there may be multiple results. Loop through for an exact match and if not found error out
+                                let fdata = data['results'].filter(function(res) { return res['text'] == text_array[i] });
+                                if (fdata.length!=1) {
+                                    alert("Error on line " + i+1 + ": " + text_array[i] + ". No exact hit in database");
+                                } else {
+                                    // Everything looks good so create an option with the exact data
+                                    this_form_el.empty();
+                                    this_form_el.append($("<option/>").attr("value", fdata[0]['id']).text(fdata[0]['text']));
+                                    this_form_el.val(fdata[0]['id']);
+                                }
+                            }
+                        })
+                    }
+                } else {
+                    //its not select2
+                    this_form_el.val(text_array[i]);
+                    //check if it got set
+                    if (this_form_el.val() != text_array[i]) {
+                        alert("Line " + i+1 + ": " + text_array[i] + ". Not valid value.")
+                    }
+                }
+            }
+        }
+        //this is for bulk update
+        function allforone(n_elements) {
+            let formzero = $(":input[id*='id_form-0']:visible", $("#bulk_form_set_form"));
+            let mypattern = /id_form-\d+(-.+)/;
+            formzero.each(function(index, obj) {
+                let last_part_of_id = mypattern.exec(obj.id)[1];
+                for (let i=1;i<n_elements;i++) {
+                    let other_input = $("#id_form-" + i + last_part_of_id);
+                    other_input.empty();
+                    other_input.append($(obj).children().clone());
+                    other_input.val($(obj).val());
+                }
+            });
+        }
+        //this is to close select2 and datepickers after editor has gone away
+        function killSelect2() {
+            $(".select2-container").remove();
+            $(".ui-datepicker").remove();
+        }
+        //this is to activate datepickers  2019-11-13 00:00:00
+        $(document).on("focus", "input[id*='Date']", function(){ $(this).datetimepicker({format: "Y-MM-DD HH:mm"}); });
+        //this is to keep focus on select2 after selections
+        $(document).on('select2:close','.select2-hidden-accessible',function () {
+            $(this).focus();
+        });
+
+        $.fn.select2.defaults.set( "theme", "bootstrap" );
+
+        //this is for GBEX_bigfiles
+        compose = function(path) {
+            var filename = path.split('/').reverse()[0];
+            //var dirpath = path.split('/').slice(0, -1).join('/');
+            var mid = " ready. Click save button to commit.";
+            return filename.concat(mid);
+        };
+    </script>
+    <script src="{% static 'GBEX_app/js/bundle_9_5_0.js' %}"></script>
+{% endblock %}
+
+{% block nav_li_buttons %}
+    {% links model_name %}
+{% endblock %}

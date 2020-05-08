@@ -1,0 +1,57 @@
+{% extends 'GBEX_app/app_base.html' %}
+
+{% load static %}
+{% load widget_tweaks %}
+{% load laeb_tags %}
+
+{% block page_header_js_block %}
+    <script>
+        var django = {
+        "jQuery": jQuery.noConflict(true)
+        };
+        var jQuery = django.jQuery;
+        var $=jQuery;
+    </script>
+    {{ form.media }}
+{% endblock %}
+
+{% block page_css_block %}
+    <link href="{% static 'GBEX_app/select2-bootstrap.css' %}" rel="stylesheet">
+{% endblock %}
+{% block page_js_block %}
+    <script>
+    try { // fail silently if there are no select2 widgets used in this model
+        django.jQuery.fn.select2.defaults.set("theme", "bootstrap");
+    } catch (e) {
+        
+    }
+    django.jQuery(document).on("focus", "input[id*='Date']", function () {
+        django.jQuery(this).datetimepicker({format: "Y-MM-DD HH:mm"});
+    });
+
+    </script>
+{% endblock %}
+{% block content %}
+    <row>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading"><div class="panel-title">{{ form.instance|to_class_name }} form</div></div>
+                <form enctype="multipart/form-data" class="form-horizontal" action="" method="post">{% csrf_token %}
+                    {% for fi in form %}
+                        <div class="form-group">
+                            {{fi.errors}}
+                            <label class="col-md-3 col-md-offset-1 control-label" for="{{ fi.auto_id }}">{{ fi.label }}</label>
+                            <div class="col-md-7">{% render_field fi class+="form-control" rows="1" %}</div>
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary btn-lg col-md-offset-4" id="save_new_status_btn">Save</button>
+                </form>
+                <div class="panel-body"><br></div>
+            </div>
+        </div>
+    </row>
+{% endblock %}
+
+{% block nav_li_buttons %}
+    {% links form.instance|to_class_name %}
+{% endblock %}

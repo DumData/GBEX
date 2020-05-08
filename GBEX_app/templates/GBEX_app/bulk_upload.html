@@ -1,0 +1,59 @@
+{% extends 'GBEX_app/app_base.html' %}
+
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+    <row>
+        <div class="col-md-offset-2 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Step 1: Get a template</h3>
+                </div>
+                <div class="panel-body">
+                    You can either download an excel file from the list you want to edit<br>
+                    or you can download a blank global template <a href="{% static 'GBEX_app/bulk_template.xlsx' %}">here</a>,<br>
+                    or if you are uploading locations, then ideally get one from the barcode scanner.
+                </div>
+            </div>
+        </div>
+    </row>
+    <row>
+        <div class="col-md-offset-2 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Step 2: Fill out template</h3>
+                </div>
+                <div class="panel-body">
+                    Edit the excel file, and fill out as many rows as you like. Then save it.<br>
+                    <br>
+                    There are 2 bulk upload modes: </b><b>Create</b> or <b>edit</b>.<br>
+
+                    <b>Create</b> mode is used to create new items and <b>edit</b> is used to edit existing items.<br>
+                    In <b>edit</b> mode, empty cells will be ignored rather than delete existing content.
+                </div>
+            </div>
+        </div>
+    </row>
+    <row>
+        <div class="col-md-offset-2 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Step 3: Upload template</h3>
+                </div>
+                <div class="panel-body">
+                    Choose upload mode and the saved template file and click the upload button<br><br>
+                    {{ form.non_field_errors }}
+                    <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
+                        {{ form }}
+                        <input type="submit" value="Upload template" class="btn btn-primary" id="save_new_status_btn" />
+                    </form>
+                    <br>
+                    It will then upload all good rows, and collect all bad rows in a new excel sheet.<br>
+                    You can then download bad_rows.xlsx, fix the errors, and upload that again.<br>
+                    If there are some 'odd' things with the excel sheet you will get pop-up messages explaining them.<br>
+                </div>
+            </div>
+        </div>
+    </row>
+{% endblock %}

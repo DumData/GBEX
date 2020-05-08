@@ -1,0 +1,187 @@
+html, body {
+	height:100%;
+}
+
+body {
+	display: flex;
+	flex-flow: column nowrap;
+}
+
+/* You may want to use react virtualized multigrids new class name setter instead of this potentially unstable name*/
+.ReactVirtualized__Grid__innerScrollContainer {
+	overflow: visible!important; /* this is done to allow edit boxes in the last column to extend beyond the table...not sure why it was the non-default: hidden */
+}
+
+#root {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+}
+
+#GBEXtable_root {
+	height: 100%;
+	display: flex;
+	flex-flow: column nowrap;
+	flex: 1;
+}
+
+#toolbar {
+	margin-bottom: 10px;
+	margin-left: 10px;
+	margin-right: 10px;
+	display: flex;
+	justify-content: space-between;
+}
+
+
+button [class*="glyphicon"] {
+	transition-property: transform, color;
+	transition-duration: 0.8s;
+}
+
+button:hover:not([disabled]) [class*="glyphicon"] {
+	color: palegreen !important;
+	transform: rotate(360deg)!important;
+}
+
+#aks {
+	flex: 2;
+}
+
+.cell {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-bottom: 1px solid #333;
+	border-right: 1px solid #333;
+	overflow: hidden;
+	font-size: 1.5rem;
+	line-height: 1.5rem;
+	text-align: center;
+}
+
+.headers {
+	border-right: 1px solid #333;
+	font-weight: bold;
+	display: flex;
+	flex-flow: column nowrap;
+	margin-top: -4px;
+}
+
+.headerTop {
+	display: flex;
+	flex: 1;
+}
+
+.headerTopTitle {
+	font-size: 20px;
+	font-family: monospace;
+	flex: 1;
+	min-width: 0px;
+	z-index: 0;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	align-self: center;
+	text-align: center;
+	line-height: 2em;
+	margin-top: -5px; /* this is needed because e.g. "g" dips into the headerBottom area and I cant figure out how to align the text to the top of the div... */
+	margin-bottom: 5px;
+}
+
+.headerTopSort {
+	color: red;
+	font-size: 1rem;
+	cursor: row-resize;
+	z-index: 1;
+	align-self: center;
+}
+
+.headerTopResize {
+	min-width: 10px;
+	cursor: col-resize;
+	z-index: 1;
+}
+
+.headerBottom {
+	display: flex;
+	flex: 1;
+	margin-top: -10px;
+}
+
+.headerBottomText {
+	min-width: 0px;
+	flex: 1;
+	z-index: 0;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+
+	font-size: 1rem!important;
+	padding-left: 10px!important;
+}
+
+.headerBottomText::placeholder {
+	font-size: 1rem;
+}
+
+.headerBottomCheck {
+	z-index: 1;
+}
+
+.odd-row {
+	background: #ceffe2;
+}
+
+.selected-row {
+	background: #dd9999!important;
+	color: white;
+}
+
+.found {
+	background: #fff8a0;
+}
+
+.found-select-row {
+	color: black!important;
+	background: #fff14c!important;
+}
+
+.found.selected-row {
+	background: salmon;
+}
+
+.selected {
+	background: seagreen!important;
+	color: white!important;
+}
+
+.popover {
+	min-width: 100px;
+}
+
+.popover-content {
+	padding: 5px;
+}
+
+.select2-container--open {
+	z-index: 99999;
+}
+
+.select2 {
+	min-width: 120px!important;
+	width: 100%!important;
+}
+
+input[type="file"] {
+	max-width: 250px;
+}
+
+.btn:hover:enabled {
+	color: white;
+	background-color: #ff5000;
+}
+
+#target.form-group {
+	margin-bottom: 0px;
+}

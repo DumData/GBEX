@@ -1,0 +1,8 @@
+{% load static %}
+{% load widget_tweaks %}
+{% csrf_token %}
+
+{% for fi in form %}
+    {% render_field fi class+="form-control" autofocus="autofocus" rows="2" cols="20" %}
+{% endfor %}
+{{ form.media }}

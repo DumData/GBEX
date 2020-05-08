@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  redis:
+    image: redis
+    restart: always
+  db:
+    image: postgres
+    restart: always
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - pgdata:/var/lib/postgresql/data/pgdata
+    env_file:
+      - .env
+  nginx:
+    image: nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - shared_volume:/shared                 # for media and static file serving
+      - ./nginx/dev:/etc/nginx/conf.d           # nginx config
+    depends_on:
+      - gbex
+  gbex:
+    build: .
+    restart: always
+    expose:
+      - 9000
+    privileged: true
+    command: bash -c "python manage.py makemigrations && python manage.py migrate --noinput && echo \"from scripts import init_scripts\" | python manage.py shell && python manage.py createinitialrevisions && python manage.py collectstatic --noinput && uwsgi --ini uwsgi.ini"
+    volumes:
+      - shared_volume:/code/shared
+    depends_on:
+      - db
+    env_file:
+      - .env
+volumes:
+  pgdata:
+  shared_volume:

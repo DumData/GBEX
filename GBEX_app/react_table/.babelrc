@@ -1,0 +1,9 @@
+{
+  "presets": ["@babel/env", "@babel/preset-react", "@babel/preset-flow"],
+  "env": {
+    "production": {
+      "presets": ["react-optimize"]
+    }
+  },
+  "plugins": ["@babel/plugin-proposal-class-properties"]
+}

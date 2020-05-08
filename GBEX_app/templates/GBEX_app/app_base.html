@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load laeb_tags %}
+
+{% block app_css_block %}
+    <link rel="stylesheet" href="{% static "GBEX_app/jquery-ui-1.12.1/jquery-ui.min.css" %}">
+    <link rel="stylesheet" href="{% static 'GBEX_app/datetimepicker/bootstrap-datetimepicker.min.css' %}">
+{% endblock %}
+
+{% block site_header_js_block %}
+    <script src="{% static "GBEX_app/jquery-ui-1.12.1/jquery-ui.min.js" %}"></script>
+    <script src="{% static "GBEX_app/datetimepicker/moment.min.js" %}"></script>
+    <script src="{% static 'GBEX_app/datetimepicker/bootstrap-datetimepicker.min.js' %}"></script>
+{% endblock %}
+
+{% block app_index_button %}
+    <a class="navbar-brand" href="{% url 'GBEXindex' %}">GBEX</a>
+{% endblock %}
+
+{% block nav_li_buttons %}
+    {% links "" %}
+{% endblock %}
