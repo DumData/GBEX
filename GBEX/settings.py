@@ -4,7 +4,7 @@ import logging
 ADD_REVERSION_ADMIN = True  # Django Reversion
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY')
-ALLOWED_HOSTS = [os.environ.get('DOMAIN')]
+ALLOWED_HOSTS = os.environ.get('DOMAIN').split(",")
 
 if os.environ.get('DEV_PROD') == 'local_dev':
 	DEBUG = True
