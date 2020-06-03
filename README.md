@@ -19,3 +19,4 @@ Then you should be able to visit:
 ### Todos
 Move models col_display_func_dict into helpers.field_to_string for many2many fields
 Come up with solution to recognize file fields (other than looking for "file" in column name)
+Make a custom thing to check on delete whether object is used in Many-to-many relation and if so, prevent deletion
