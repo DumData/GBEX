@@ -95,5 +95,5 @@ class CellLine(InventoryItem):
 
 	widgets = {
 		**default_widgets,
-		'Species': autocomplete.ModelSelect2Multiple(url=reverse_lazy('SpeciesOption-autocomplete')),
+		'Species': autocomplete.ModelSelect2(url=reverse_lazy('SpeciesOption-autocomplete')),
 	}
