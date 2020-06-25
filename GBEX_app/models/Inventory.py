@@ -31,11 +31,12 @@ class AntibioticOption(BaseOption):
 
 
 class Plasmid(InventoryItem):
+	CommonName = models.TextField(blank=True, null=True)
 	Genotype = models.TextField(blank=True, null=True)
 	Antibiotic = models.ManyToManyField(AntibioticOption, blank=True)
 	Genbank_file = ResumableFileField(blank=True, null=True, upload_to=get_upload_path, max_length=500)
 
-	order = [*default_order, 'Usage', 'Antibiotic', 'Genbank_file', 'Location']
+	order = [*default_order, 'CommonName', 'Usage', 'Antibiotic', 'Genbank_file', 'Location']
 	symbol = "PL"
 
 	col_display_func_dict = {
@@ -56,6 +57,7 @@ class VendorOption(BaseOption):
 
 
 class Strain(InventoryItem):
+	CommonName = models.TextField(blank=True, null=True)
 	Species = models.ForeignKey(SpeciesOption, on_delete=models.PROTECT)
 	Subtype = models.TextField(blank=True, null=True)
 	Antibiotic = models.ManyToManyField(AntibioticOption, blank=True)
@@ -68,8 +70,8 @@ class Strain(InventoryItem):
 	ParentStrain = models.ForeignKey("self", null=True, blank=True, on_delete=models.PROTECT)
 	Genbank_file = ResumableFileField(blank=True, null=True, upload_to=get_upload_path, max_length=500)
 
-	order = [*default_order, 'Species', 'Subtype', 'Usage', 'ParentStrain', 'Antibiotic', 'Genotype', 'Plasmids', 'Genbank_file',
-			 'Vendor', 'CatalogNo', 'TubesLeft', 'TubeVolume', 'Location']
+	order = [*default_order, 'CommonName', 'Species', 'Subtype', 'Usage', 'ParentStrain', 'Antibiotic', 'Genotype',
+			 'Plasmids', 'Genbank_file', 'Vendor', 'CatalogNo', 'TubesLeft', 'TubeVolume', 'Location']
 	symbol = "ST"
 	col_display_func_dict = {
 		'Plasmids': lambda item: ", ".join(ab.name for ab in item.Plasmids.all()) if item.Plasmids.all() else "",
@@ -82,15 +84,15 @@ class Strain(InventoryItem):
 		'ParentStrain': autocomplete.ModelSelect2(url=reverse_lazy('Strain-autocomplete')),
 		'Plasmids': autocomplete.ModelSelect2Multiple(url=reverse_lazy('Plasmid-autocomplete')),
 		'Antibiotic': autocomplete.ModelSelect2Multiple(url=reverse_lazy('AntibioticOption-autocomplete')),
-
 	}
 
 
 class CellLine(InventoryItem):
+	CommonName = models.TextField(blank=True, null=True)
 	Species = models.ForeignKey(SpeciesOption, on_delete=models.PROTECT)
 	Genotype = models.TextField(blank=True, null=True)
 
-	order = [*default_order, 'Usage', 'Species', 'Genotype', 'Location']
+	order = [*default_order, 'CommonName', 'Usage', 'Species', 'Genotype', 'Location']
 	symbol = "CL"
 
 	widgets = {
