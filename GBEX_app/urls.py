@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.apps import apps
 
 from GBEX_app.forms import CreateForm
-from GBEX_app.views import GBEXindex, BulkUpdateView, BulkUploadView, GBEXList, GBEXAutocomplete, ExcelExportView, GBEXUpdateView, GBEXCreateView
+from GBEX_app.views import GBEXindex, BulkUpdateView, BulkUploadView, GBEXList, GBEXAutocomplete, ExcelExportView, ArchiveView, GBEXUpdateView, GBEXCreateView
 from itertools import chain
 
 
@@ -17,7 +17,9 @@ def url_gen(model):
 		path(f'{mnl}/', GBEXList.as_view(model=model), name=f'list_{mnl}'),
 		path(f'{mnl}/update/<pk>/<column>', GBEXUpdateView.as_view(model=model, widgets=model.widgets)),
 		path(f'{mnl}/bulkupdate/<column>/<rids>', BulkUpdateView.as_view(model=model, widgets=model.widgets)),
-		path(f'{mnl}/bulkupload/', BulkUploadView.as_view()), re_path(f'{mnl}/exportexcel/(?P<rids>.*)$', ExcelExportView.as_view(model=model),name=f'export_{mnl}'),
+		path(f'{mnl}/bulkupload/', BulkUploadView.as_view()),
+		re_path(f'{mnl}/exportexcel/(?P<rids>.*)$', ExcelExportView.as_view(model=model),name=f'export_{mnl}'),
+		re_path(f'{mnl}/archive/(?P<rids>.*)$', ArchiveView.as_view(model=model), name=f'archive_{mnl}'),
 		path(f'{mnl}/create', GBEXCreateView.as_view(model=model, success_url=reverse_lazy(f'list_{mnl}'), form_class=form_class), name=f'create_{mnl}'),
 		path(f'{mnl}/autocomplete/', GBEXAutocomplete.as_view(model=model, search_fields=["name"]), name=f'{mnl}-autocomplete')
 	]

@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.db.models import Q
 from django.forms import modelform_factory, modelformset_factory
 from django.http import JsonResponse, HttpResponse
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.translation import ugettext
 from django.views.generic import TemplateView, CreateView, UpdateView, View
@@ -141,7 +142,7 @@ class GBEXList(TemplateResponseMixin, ContextMixin, View):
 		context = self.get_context_data(**kwargs)
 		context['model_name'] = self.model.__name__
 		context['model_order'] = self.model.order
-		context['data'] = model_to_list_list(self.model.objects.all())
+		context['data'] = model_to_list_list(self.model.objects.filter(archived=False))
 		context['table_settings'] = request.user.profile.table_settings
 		context['settings_id'] = request.user.profile.id
 
@@ -230,3 +231,16 @@ class ExcelExportView(View):
 			content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 		response['Content-Disposition'] = 'attachment; filename="export.xlsx"'
 		return response
+
+
+class ArchiveView(View):
+	model = None
+
+	def get(self, request, *args, **kwargs):
+		if kwargs['rids']:
+			# find all model instances with id in rids
+			ids = kwargs['rids'].split(",")
+			# set them all to archived
+			self.model.objects.filter(id__in=ids).update(archived=True)
+		# refresh page
+		return redirect(f"/{self.model.__name__}")

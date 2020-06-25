@@ -103,6 +103,7 @@ export default class ControlRow extends React.PureComponent<Props, State> {
           <ButtonToolbar>
             <ButtonGroup>
               <Button bsSize="sm" bsStyle="primary" onClick={() => window.location.href = window.createurl}>Add rows <Glyphicon glyph="plus" /></Button>
+              <Button bsSize="sm" bsStyle="primary" disabled={noneselected} onClick={() => window.location.href = window.location.href + "archive/" + Array.from(this.props.rowsSelected).join(",")}>Archive rows <Glyphicon glyph="minus" /></Button>
               <Button bsSize="sm" bsStyle="primary" onClick={() => window.location.href = window.location.href + "bulkupload/"}>Bulk upload <Glyphicon glyph="cloud-upload" /></Button>
             </ButtonGroup>
             <ButtonGroup>

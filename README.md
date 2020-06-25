@@ -16,7 +16,19 @@ Then you should be able to visit:
    3) OpenAPI swagger: http://localhost/swagger
    4) OpenAPI redoc: http://localhost/redoc
 
+
+### Changelog
+* Archive feature: Implemented so it simply hides archived items on list pages. They can still be linked and found in link searches.
+
 ### Todos
 Move models col_display_func_dict into helpers.field_to_string for many2many fields
 Come up with solution to recognize file fields (other than looking for "file" in column name)
 Make a custom thing to check on delete whether object is used in Many-to-many relation and if so, prevent deletion
+
+
+### Batch model todos
+* Batches
+  * Make batch abstract
+  * Make 2-3 test instances of batch
+  * When sending data to frontend, add info on whether or not this has batches and maybe also batch aggregate data
+  * Update GUI to put a link to batch view somewhere

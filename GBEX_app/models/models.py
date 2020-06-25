@@ -22,6 +22,7 @@ class GBEXModelBase(models.Model):
 	responsible = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
 	created = models.DateTimeField(auto_now_add=True)
 	edited = models.DateTimeField(auto_now=True)
+	archived = models.BooleanField(default=False)
 
 	order = default_order
 	symbol = ""

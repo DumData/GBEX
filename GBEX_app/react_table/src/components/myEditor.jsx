@@ -74,7 +74,7 @@ export default class MyEditor extends React.PureComponent<Props, State> {
     return (
       <div onKeyDown={this.formKeyHandler} style={this.props.style}>
         <Popover id="edit_pop" positionTop="-10px" positionLeft="10px" >
-          <form inline onSubmit={this.handleSubmit} style={form_style}>
+          <form onSubmit={this.handleSubmit} style={form_style}>
             <FormGroup ref={(node) => this.formg = node} id={"target"} />
             <Button ref={(node) => this.formb = node} type="submit" bsSize="small" bsStyle="primary"><span className="glyphicon glyphicon-save" /></Button>
           </form>
