@@ -6,7 +6,7 @@ from dal import autocomplete
 from GBEX_bigfiles.fields import ResumableFileField
 from GBEX_app.helpers import get_upload_path
 
-from .models import BaseOption, GBEXModelBase, default_order, default_widgets
+from .models import BaseOption, GBEXModelBase, AbstractBatch, default_order, default_widgets
 
 menu_label = "Inventory"
 
@@ -14,9 +14,24 @@ menu_label = "Inventory"
 class Plasmid(GBEXModelBase):
 	Description = models.TextField(blank=True, null=True)
 	Genbank_file = ResumableFileField(blank=True, null=True, upload_to=get_upload_path, max_length=500)
+
 	menu_label = menu_label
-	order = [*default_order, 'Description', 'Genbank_file']
+	order = [*default_order, 'Description', 'Genbank_file', 'Batches']
 	symbol = "PL"
+
+	col_display_func_dict = {
+		'Batches': lambda item: item.plasmidbatch_set.count(),
+	}
+
+
+class PlasmidBatch(AbstractBatch):
+	Parent = models.ForeignKey(Plasmid, on_delete=models.PROTECT)
+	Barcode = models.TextField(blank=True, null=True, unique=True)
+	SequenceVerified = models.BooleanField(default=False)
+
+	menu_label = menu_label
+	order = [*default_order, 'Barcode', 'SequenceVerified']
+	symbol = "PL_Batch"
 
 
 class SpeciesOption(BaseOption):

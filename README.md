@@ -28,7 +28,9 @@ Make a custom thing to check on delete whether object is used in Many-to-many re
 
 ### Batch model todos
 * Batches
-  * Make batch abstract
-  * Make 2-3 test instances of batch
-  * When sending data to frontend, add info on whether or not this has batches and maybe also batch aggregate data
-  * Update GUI to put a link to batch view somewhere
+  * (check) Make batch abstract
+  * (checkish) Make 2-3 test instances of batch
+  * (check) When sending data to frontend, add info on whether or not this has batches and maybe also batch aggregate data
+  * Make url for batches
+  * Make frontend know that the batch column should be a link to the batch url
+  * Update GUI to display batchcolumn as links

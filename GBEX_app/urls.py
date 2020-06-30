@@ -10,7 +10,7 @@ from itertools import chain
 
 def url_gen(model):
 	mnl = model.__name__
-	fields = model.order[2:]
+	fields = [x.name for x in model._meta.get_fields() if x.name in model.order[2:]] #model.order[2:]
 	form_class = modelform_factory(model, form=CreateForm, fields=fields, widgets=model.widgets)
 
 	return [
