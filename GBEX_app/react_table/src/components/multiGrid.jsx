@@ -7,6 +7,10 @@ import { AutoSizer, MultiGrid } from 'react-virtualized';
 import MyEditor from './myEditor';
 import 'react-virtualized/styles.css'
 
+function createMarkup(value) {
+  return {__html: value};
+}
+
 const stlg = {zIndex: 2,boxShadow: "10px 10px 10px -5px #888"};
 const strg = {zIndex: 1,boxShadow: "0px 10px 10px -5px #888"};
 const sblg = {zIndex: 1,boxShadow: "10px 0px 10px -5px #888"};
@@ -160,16 +164,16 @@ export default class RVMultiGrid extends React.PureComponent<Props, State> {
 
     // is cell selected? And/or active?
     if (columnIndex === this.state.cursorColumn && rowIndex === this.state.cursorRow) {
-      if (this.state.editActive) {
+      if (this.state.editActive && !window.col_read_only.includes(colname)) {
         return (<MyEditor key={key} style={style} pk={id} columnName={colname} onCommit={this.props.doCommit}/>)
       } else {
         cn += " selected"
       }
     }
 
-    // check if file column
-    if (colname.includes("file")) {
-      val = <a href={"/downloads/" + val}>{val.slice(val.lastIndexOf("/")+1)}</a>
+    // check if val should be displayed as html
+    if (window.col_html_string.includes(colname)) {
+      val = <div dangerouslySetInnerHTML={createMarkup(val)} />
     }
 
     return (

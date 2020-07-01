@@ -38,6 +38,8 @@
         var settings_id = {{ settings_id }};
         var user_id = {{ request.user.id }};
         var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+        var col_html_string =  {{ col_html_string|safe }};  // list of columns to show as html rather than string
+        var col_read_only = {{ col_read_only|safe }};  // list of read only columns (no editor will show)
 
         //this is for bulk update
         function bulk_text_apply() {

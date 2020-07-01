@@ -31,6 +31,7 @@ Make a custom thing to check on delete whether object is used in Many-to-many re
   * (check) Make batch abstract
   * (checkish) Make 2-3 test instances of batch
   * (check) When sending data to frontend, add info on whether or not this has batches and maybe also batch aggregate data
-  * Make url for batches
-  * Make frontend know that the batch column should be a link to the batch url
-  * Update GUI to display batchcolumn as links
+  * (check) Make a "custom_column_string" and "custom_column_action" list on the list.html template.
+  * (check) Make frontend know that the batch column should be a link to the batch url
+  * (check) Update GUI to display batchcolumn as links
+  * Make url and view for batches

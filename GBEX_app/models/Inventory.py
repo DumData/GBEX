@@ -20,8 +20,12 @@ class Plasmid(GBEXModelBase):
 	symbol = "PL"
 
 	col_display_func_dict = {
-		'Batches': lambda item: item.plasmidbatch_set.count(),
+		'Batches': lambda item: f"<a href=''>{item.plasmidbatch_set.count()} batches</a>",
+		'Genbank_file': lambda item: f"<a href='/downloads/{item.Genbank_file}'>{str(item.Genbank_file).split('/')[-1]}</a>",
 	}
+
+	col_html_string = ['Genbank_file', 'Batches']
+	col_read_only = ['Batches']
 
 
 class PlasmidBatch(AbstractBatch):

@@ -145,6 +145,8 @@ class GBEXList(TemplateResponseMixin, ContextMixin, View):
 		context['data'] = model_to_list_list(self.model.objects.filter(archived=False))
 		context['table_settings'] = request.user.profile.table_settings
 		context['settings_id'] = request.user.profile.id
+		context['col_html_string'] = self.model.col_html_string
+		context['col_read_only'] = self.model.col_read_only
 
 		return self.render_to_response(context)
 

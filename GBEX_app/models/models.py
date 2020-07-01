@@ -30,6 +30,8 @@ class GBEXModelBase(models.Model):
 	col_display_func_dict = {}  # custom display functions. Used e.g. for many2many links
 	widgets = default_widgets  # custom widgets Used e.g. for autocompletes for foreignkeys
 	GBEX_Page = True  # indicate that this is a frontend item
+	col_html_string = []  # a list of columns that will be showed as html instead of string
+	col_read_only = []  # a list of columns where the GUI will not show an editor
 
 	def __str__(self):
 		return self.name
