@@ -1,5 +1,5 @@
 from django.db import models
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 
 from dal import autocomplete
 
@@ -11,6 +11,16 @@ from .models import BaseOption, GBEXModelBase, AbstractBatch, default_order, def
 menu_label = "Inventory"
 
 
+class PlasmidBatch(AbstractBatch):
+	Parent = models.ForeignKey("Plasmid", on_delete=models.PROTECT)
+	Barcode = models.TextField(blank=True, null=True, unique=True)
+	SequenceVerified = models.BooleanField(default=False)
+
+	menu_label = menu_label
+	order = [*default_order, 'Barcode', 'SequenceVerified']
+	symbol = "PL_Batch"
+
+
 class Plasmid(GBEXModelBase):
 	Description = models.TextField(blank=True, null=True)
 	Genbank_file = ResumableFileField(blank=True, null=True, upload_to=get_upload_path, max_length=500)
@@ -18,24 +28,14 @@ class Plasmid(GBEXModelBase):
 	menu_label = menu_label
 	order = [*default_order, 'Description', 'Genbank_file', 'Batches']
 	symbol = "PL"
-
+	batchmodel = PlasmidBatch
 	col_display_func_dict = {
-		'Batches': lambda item: f"<a href=''>{item.plasmidbatch_set.count()} batches</a>",
+		'Batches': lambda item: f"<a href='{reverse('batch_Plasmid', kwargs=dict(pk=item.pk))}'>{item.plasmidbatch_set.count()} batches</a>",
 		'Genbank_file': lambda item: f"<a href='/downloads/{item.Genbank_file}'>{str(item.Genbank_file).split('/')[-1]}</a>",
 	}
 
 	col_html_string = ['Genbank_file', 'Batches']
 	col_read_only = ['Batches']
-
-
-class PlasmidBatch(AbstractBatch):
-	Parent = models.ForeignKey(Plasmid, on_delete=models.PROTECT)
-	Barcode = models.TextField(blank=True, null=True, unique=True)
-	SequenceVerified = models.BooleanField(default=False)
-
-	menu_label = menu_label
-	order = [*default_order, 'Barcode', 'SequenceVerified']
-	symbol = "PL_Batch"
 
 
 class SpeciesOption(BaseOption):

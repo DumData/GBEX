@@ -151,6 +151,26 @@ class GBEXList(TemplateResponseMixin, ContextMixin, View):
 		return self.render_to_response(context)
 
 
+class GBEXBatchList(TemplateResponseMixin, ContextMixin, View):
+	"""
+	Convert an entire Batch model into a string array
+	"""
+	template_name = "GBEX_app/list.html"
+	model = None
+
+	def get(self, request, *args, **kwargs):
+		context = self.get_context_data(**kwargs)
+		context['model_name'] = self.model.__name__
+		context['model_order'] = self.model.order
+		context['data'] = model_to_list_list(self.model.objects.filter(Parent=self.kwargs['pk'], archived=False))
+		context['table_settings'] = request.user.profile.table_settings
+		context['settings_id'] = request.user.profile.id
+		context['col_html_string'] = self.model.col_html_string
+		context['col_read_only'] = self.model.col_read_only
+
+		return self.render_to_response(context)
+
+
 class GBEXAutocomplete(Select2QuerySetView):
 	model = None
 	search_fields = []

@@ -24,7 +24,7 @@ class GBEXModelBase(models.Model):
 	created = models.DateTimeField(auto_now_add=True)
 	edited = models.DateTimeField(auto_now=True)
 	archived = models.BooleanField(default=False)
-
+	batchmodel = ""
 	order = default_order  # which order should the fields be displayed in
 	symbol = ""  # string for generating name  "symbol" + number
 	col_display_func_dict = {}  # custom display functions. Used e.g. for many2many links
@@ -64,6 +64,7 @@ class BaseOption(models.Model):
 class AbstractBatch(GBEXModelBase):
 	# instanced of this need to have a foreignkey link to a GBEXModel
 	# Parent = models.ForeignKey(x, on_delete=models.PROTECT)
+	# "batchmodel = thismodel" needs to be set the parent
 	GBEX_Page = False
 
 	class Meta:
