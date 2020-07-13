@@ -28,7 +28,7 @@ class GBEXindex(TemplateView):
 	namespace = None
 
 	def data_counts(self):
-		all_numbers = {model.__name__: [model.objects.count(), 0] for model in apps.get_app_config('GBEX_app').get_models() if hasattr(model, "GBEX_Page")}
+		all_numbers = {model.__name__: [model.objects.count(), 0] for model in apps.get_app_config('GBEX_app').get_models() if getattr(model, "model_kind", False) == 'GBEX_Page'}
 
 		divider = max([x[0] for x in all_numbers.values()])
 		if divider != 0:

@@ -29,7 +29,7 @@ class GBEXModelBase(models.Model):
 	symbol = ""  # string for generating name  "symbol" + number
 	col_display_func_dict = {}  # custom display functions. Used e.g. for many2many links
 	widgets = default_widgets  # custom widgets Used e.g. for autocompletes for foreignkeys
-	GBEX_Page = True  # indicate that this is a frontend item
+	model_kind = "GBEX_Page"  # indicate that this is a frontend item
 	col_html_string = []  # a list of columns that will be showed as html instead of string
 	col_read_only = []  # a list of columns where the GUI will not show an editor
 
@@ -46,7 +46,7 @@ class BaseOption(models.Model):
 	name = models.TextField(unique=True)
 	created = models.DateTimeField(auto_now_add=True)
 
-	GBEX_Option = True  # used by urls.py to generate autocomplete url
+	model_kind = "GBEX_Option"  # indicate that this is a frontend item
 
 	def __str__(self):
 		return self.name
@@ -65,7 +65,7 @@ class AbstractBatch(GBEXModelBase):
 	# instanced of this need to have a foreignkey link to a GBEXModel
 	# Parent = models.ForeignKey(x, on_delete=models.PROTECT)
 	# "batchmodel = thismodel" needs to be set the parent
-	GBEX_Page = False
+	model_kind = "GBEX_Batch"  # indicate that this is a frontend item
 
 	class Meta:
 		abstract = True

@@ -16,6 +16,6 @@ class GbexAppConfig(AppConfig):
         from GBEX_app import signals
 
         # check for model symbol collisions
-        symbols = [model.symbol for model in self.get_models() if hasattr(model, "GBEX_Page")]
+        symbols = [model.symbol for model in self.get_models() if getattr(model, "model_kind", False) == "GBEX_Page"]
         if len(set(symbols)) != len(symbols):
             raise ValueError(f"Duplicate model symbols detected! {symbols}")
