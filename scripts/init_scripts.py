@@ -7,7 +7,7 @@ print("Creating bulk template")
 template_wb = Workbook()
 first_sheet = True
 for model in apps.get_app_config('GBEX_app').get_models():
-	if hasattr(model, "GBEX_Page"):
+	if getattr(model, "model_kind", "") in ['GBEX_Page', 'GBEX_Batch']:
 		if first_sheet:
 			sheet = template_wb.active
 			sheet.title = model.__name__

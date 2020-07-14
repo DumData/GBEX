@@ -14,6 +14,7 @@ class Profile(models.Model):
 # some defaults for quickly making GBEXModels
 default_order = ['id', 'name', 'responsible']
 default_widgets = {'Responsible': autocomplete.ModelSelect2(url=reverse_lazy('User-autocomplete')), }
+default_readonly = ['id', 'name']
 
 
 # Base model to capture shared fields
@@ -24,14 +25,13 @@ class GBEXModelBase(models.Model):
 	created = models.DateTimeField(auto_now_add=True)
 	edited = models.DateTimeField(auto_now=True)
 	archived = models.BooleanField(default=False)
-	batchmodel = ""
 	order = default_order  # which order should the fields be displayed in
 	symbol = ""  # string for generating name  "symbol" + number
 	col_display_func_dict = {}  # custom display functions. Used e.g. for many2many links
 	widgets = default_widgets  # custom widgets Used e.g. for autocompletes for foreignkeys
 	model_kind = "GBEX_Page"  # indicate that this is a frontend item
 	col_html_string = []  # a list of columns that will be showed as html instead of string
-	col_read_only = []  # a list of columns where the GUI will not show an editor
+	col_read_only = [*default_readonly]  # a list of columns where the GUI will not show an editor
 
 	def __str__(self):
 		return self.name

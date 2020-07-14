@@ -28,7 +28,7 @@
 {% endblock %}
 {% block page_js_block %}
     <script>
-        var createurl = "{% url 'create_'|add:model_name %}";
+        var createurl = "{{ create_url }}";
         var columns = {{ model_order|safe }};
         var data = {{ data|safe }};
         var whodis = "{{ model_name }}";

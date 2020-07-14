@@ -6,19 +6,21 @@ from dal import autocomplete
 from GBEX_bigfiles.fields import ResumableFileField
 from GBEX_app.helpers import get_upload_path
 
-from .models import BaseOption, GBEXModelBase, AbstractBatch, default_order, default_widgets
+from .models import BaseOption, GBEXModelBase, AbstractBatch, default_order, default_widgets, default_readonly
 
 menu_label = "Inventory"
 
 
 class PlasmidBatch(AbstractBatch):
 	Parent = models.ForeignKey("Plasmid", on_delete=models.PROTECT)
-	Barcode = models.TextField(blank=True, null=True, unique=True)
+	Barcode = models.TextField(blank=True, null=True)
 	SequenceVerified = models.BooleanField(default=False)
 
 	menu_label = menu_label
-	order = [*default_order, 'Barcode', 'SequenceVerified']
+	order = [*default_order, 'Barcode', 'SequenceVerified', 'Parent']
 	symbol = "PL_Batch"
+
+	col_read_only = [*default_readonly, 'Parent']
 
 
 class Plasmid(GBEXModelBase):
@@ -30,12 +32,12 @@ class Plasmid(GBEXModelBase):
 	symbol = "PL"
 	batchmodel = PlasmidBatch
 	col_display_func_dict = {
-		'Batches': lambda item: f"<a href='{reverse('batch_Plasmid', kwargs=dict(pk=item.pk))}'>{item.plasmidbatch_set.count()} batches</a>",
+		'Batches': lambda item: f"<a href='{reverse('list_PlasmidBatch', kwargs=dict(parent_pk=item.pk))}'>{item.plasmidbatch_set.filter(archived=False).count()} batches</a>",
 		'Genbank_file': lambda item: f"<a href='/downloads/{item.Genbank_file}'>{str(item.Genbank_file).split('/')[-1]}</a>",
 	}
 
 	col_html_string = ['Genbank_file', 'Batches']
-	col_read_only = ['Batches']
+	col_read_only = [*default_readonly, 'Batches']
 
 
 class SpeciesOption(BaseOption):

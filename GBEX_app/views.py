@@ -9,6 +9,7 @@ from django.utils.translation import ugettext
 from django.views.generic import TemplateView, CreateView, UpdateView, View
 from django.views.generic.base import TemplateResponseMixin, ContextMixin
 from django.views.generic.edit import FormView
+from django.urls import reverse
 
 from json import loads
 from openpyxl import Workbook
@@ -45,6 +46,13 @@ class GBEXCreateView(CreateView):
 	def form_valid(self, form):
 		dups = form.cleaned_data['duplicater']
 		form.instance.name = get_free_id(self.model)
+		parent_inst = None
+		if "parent_pk" in self.kwargs.keys():  # This is a batch model
+			parent_inst = self.model.Parent.get_queryset().get(id=self.kwargs['parent_pk'])
+			form.instance.Parent = parent_inst
+			self.success_url = reverse(f'list_{self.model.__name__}', kwargs={'parent_pk': self.kwargs['parent_pk']})
+		else:
+			self.success_url = reverse(f'list_{self.model.__name__}')
 		form.save()
 
 		messages.success(request=self.request, message=f"Created new item: {form.instance.name}")
@@ -52,6 +60,8 @@ class GBEXCreateView(CreateView):
 			form.instance.pk = None  # this makes the save mechanism save a new object
 			#form.instance.organism_ptr = None  # this is needed for inherited models specifically organism inherited
 			form.instance.name = get_free_id(self.model)
+			if parent_inst:  # check if its a batch model
+				form.instance.Parent = parent_inst
 			form.save()
 			messages.success(request=self.request, message=f"Created new item: {form.instance.name}")
 
@@ -139,30 +149,22 @@ class GBEXList(TemplateResponseMixin, ContextMixin, View):
 	model = None
 
 	def get(self, request, *args, **kwargs):
+		mnl = self.model.__name__
 		context = self.get_context_data(**kwargs)
-		context['model_name'] = self.model.__name__
+		context['model_name'] = mnl
 		context['model_order'] = self.model.order
-		context['data'] = model_to_list_list(self.model.objects.filter(archived=False))
-		context['table_settings'] = request.user.profile.table_settings
-		context['settings_id'] = request.user.profile.id
-		context['col_html_string'] = self.model.col_html_string
-		context['col_read_only'] = self.model.col_read_only
 
-		return self.render_to_response(context)
+		datafilter = {'archived': False}
+		url_kwargs = {}
+		# parent_pk is part of the batch system and if found will only fetch a subset of the model with Parent=parent_pk
+		if 'parent_pk' in self.kwargs.keys():
+			parent_pk = self.kwargs['parent_pk']
+			datafilter['Parent'] = parent_pk
+			url_kwargs = {'parent_pk': parent_pk}
 
+		context['create_url'] = reverse(f"create_{mnl}", kwargs=url_kwargs)
+		context['data'] = model_to_list_list(self.model.objects.filter(**datafilter))
 
-class GBEXBatchList(TemplateResponseMixin, ContextMixin, View):
-	"""
-	Convert an entire Batch model into a string array
-	"""
-	template_name = "GBEX_app/list.html"
-	model = None
-
-	def get(self, request, *args, **kwargs):
-		context = self.get_context_data(**kwargs)
-		context['model_name'] = self.model.__name__
-		context['model_order'] = self.model.order
-		context['data'] = model_to_list_list(self.model.objects.filter(Parent=self.kwargs['pk'], archived=False))
 		context['table_settings'] = request.user.profile.table_settings
 		context['settings_id'] = request.user.profile.id
 		context['col_html_string'] = self.model.col_html_string
@@ -211,13 +213,17 @@ class ExcelExportView(View):
 	model = None
 
 	def get(self, request, *args, **kwargs):
-		if kwargs['rids']:
+		if 'rids' in kwargs.keys():
 			# find alle model instances med et id i rids OG som er i namespace
 			ids = kwargs['rids'].split(",")
 			objects = self.model.objects.filter(id__in=ids)
 		else:
 			# return all model instances from namespace
-			objects = self.model.objects.filter()
+			datafilter = {'archived': False}
+			# parent_pk is part of the batch system and if found will only fetch a subset of the model with Parent=parent_pk
+			if 'parent_pk' in kwargs.keys():
+				datafilter['Parent'] = self.kwargs['parent_pk']
+			objects = self.model.objects.filter(**datafilter)
 
 		# turn objects into a workbook
 		data = model_to_list_list(objects)
@@ -265,4 +271,8 @@ class ArchiveView(View):
 			# set them all to archived
 			self.model.objects.filter(id__in=ids).update(archived=True)
 		# refresh page
-		return redirect(f"/{self.model.__name__}")
+		url_kwargs = {}
+		if 'parent_pk' in kwargs.keys():
+			url_kwargs['parent_pk'] = kwargs['parent_pk']
+
+		return redirect(reverse(f"list_{self.model.__name__}", kwargs=url_kwargs))

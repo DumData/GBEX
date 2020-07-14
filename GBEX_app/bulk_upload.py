@@ -42,15 +42,20 @@ def pre_import(wb, bad_book, return_messages, create):
 		model = bulk_importable_models[sheet_title]
 		fkeys = {}  # field_name_lower: rel_model
 		m2ms = {}  # field_name_lower: rel_model
+		required_fields = {}  # fields with blank=False
+		model_order = [x for x in model.order if
+					   x != 'id' and 'file' not in x.lower()]  # remove id...nobody gets to change that and we dont support files right now
 		# figure out which fields are relational
 		for field in model._meta.get_fields():
-			if not field.auto_created:
+			if field.name in model_order:
 				if field.is_relation:
 					if field.many_to_many:
 						m2ms[field.name] = [field.name, field.remote_field.model]
 					else:
 						fkeys[field.name] = field.remote_field.model
-		model_order = [x for x in model.order if x != 'id' and 'file' not in x.lower()]  # remove id...nobody gets to change that and we dont support files right now
+				if not field.blank:
+					required_fields[field.name] = field.default  # store the default value
+
 
 		# Go through columns
 		# Check if names are valid model fields and keep going until you spot two empty headers, stop, and write errors in next column
@@ -64,7 +69,7 @@ def pre_import(wb, bad_book, return_messages, create):
 			if not header:
 				empty_header += 1
 				if empty_header == 2:
-					error_write_column = cell.column
+					error_write_column = cell.column_letter
 					break
 				else:
 					continue
@@ -91,10 +96,23 @@ def pre_import(wb, bad_book, return_messages, create):
 					# check if name is ok for this project/model
 					if not good_name.match(name):
 						raise ValueError(f"Name '{name}' does not adhere to naming scheme: '{prefix}N', where N is a number")
+					reqs = {}
+					for reqqed, default in required_fields.items():
+						value = return_stripped(
+							this_sheet.cell(column=field_to_column_map[reqqed], row=row_number).value)
+						if not value:
+							value = default
+						if reqqed in fkeys.keys():
+							finst = fkeys[reqqed].objects.get(name=value)
+							reqs[reqqed] = finst
+						else:
+							reqs[reqqed] = value
+					reqs['name'] = name
 					# create
 					with atomic():
-						created_insts[name] = model.objects.create(name=name)
-				except (IntegrityError, ObjectDoesNotExist, ValueError, AttributeError, NameError) as e:
+						# create the smallest object possible, aka name + blank=False fields
+						created_insts[name] = model.objects.create(**reqs)
+				except (IntegrityError, ObjectDoesNotExist, ValueError, AttributeError, NameError, ValidationError) as e:
 					bad_rows[name] = e
 
 				row_number += 1
@@ -183,13 +201,13 @@ def bulk_import(excel_file, upload_type):
 			except (IntegrityError, ObjectDoesNotExist, ValidationError, ValueError, AttributeError, NameError, FileNotFoundError) as e:
 				# copy entire row and write error info in "error_write_column"
 				for cell in this_sheet[row_number]:
-					bad_sheet[f"{cell.column}{bad_row_number}"] = return_stripped(cell.value)
-					bad_sheet[f"{cell.column}{bad_row_number}"].hyperlink = cell.hyperlink
+					pass
+					bad_sheet[f"{cell.column_letter}{bad_row_number}"] = return_stripped(cell.value)
+					bad_sheet[f"{cell.column_letter}{bad_row_number}"].hyperlink = cell.hyperlink
 
 				error_type = e.__class__.__name__
 				error_text = e.__str__()
-				if e.__class__ == FileNotFoundError:
-					error_text = error_text.split("NNFCB")[1]
+
 				bad_sheet[f"{error_write_column}{bad_row_number}"] = f"{error_type}: {error_text}"
 				bad_row_number += 1
 				# delete row if we created it. Cant leave unfinished rows around
