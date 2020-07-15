@@ -1,6 +1,7 @@
 from re import compile
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.db.models import Model
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
 from django.apps import apps
@@ -112,7 +113,7 @@ def pre_import(wb, bad_book, return_messages, create):
 					with atomic():
 						# create the smallest object possible, aka name + blank=False fields
 						created_insts[name] = model.objects.create(**reqs)
-				except (IntegrityError, ObjectDoesNotExist, ValueError, AttributeError, NameError, ValidationError) as e:
+				except (IntegrityError, ObjectDoesNotExist, ValueError, AttributeError, NameError, Model.DoesNotExist, ValidationError) as e:
 					bad_rows[name] = e
 
 				row_number += 1

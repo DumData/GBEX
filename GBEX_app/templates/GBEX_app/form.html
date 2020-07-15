@@ -53,5 +53,5 @@
 {% endblock %}
 
 {% block nav_li_buttons %}
-    {% links form.instance|to_class_name %}
+    {% links form.instance|to_class_name "javascript:history.back()" "Go back" %}
 {% endblock %}

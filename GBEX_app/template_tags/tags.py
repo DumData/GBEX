@@ -12,7 +12,7 @@ def to_class_name(value):
 
 
 @register.inclusion_tag('GBEX_app/links.html')
-def links(selected_model):
+def links(selected_model, return_url="", return_text=""):
     menus = {}
     selected_menu = ""
     for model in apps.get_app_config('GBEX_app').get_models():
@@ -28,6 +28,8 @@ def links(selected_model):
         "menus": menus,
         "selected_model": selected_model,
         "selected_menu": selected_menu,
+        "return_url": return_url,
+        "return_text": return_text
     }
 
 

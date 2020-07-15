@@ -153,9 +153,9 @@
             return filename.concat(mid);
         };
     </script>
-    <script src="{% static 'GBEX_app/js/bundle_9_5_0.js' %}"></script>
+    <script src="{% static 'GBEX_app/js/bundle_9_5_1.js' %}"></script>
 {% endblock %}
 
 {% block nav_li_buttons %}
-    {% links model_name %}
+    {% links model_name return_url return_text %}
 {% endblock %}

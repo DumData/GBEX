@@ -2,6 +2,7 @@
 
 {% load static %}
 {% load widget_tweaks %}
+{% load laeb_tags %}
 
 {% block content %}
     <row>
@@ -56,4 +57,8 @@
             </div>
         </div>
     </row>
+{% endblock %}
+
+{% block nav_li_buttons %}
+    {% links "Bulk upload" "javascript:history.back()" "Go back" %}
 {% endblock %}

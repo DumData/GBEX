@@ -6,13 +6,22 @@ from rest_framework.exceptions import AuthenticationFailed
 
 
 def get_free_id(model) -> str:
+	"""
+	Using a naming scheme [Symbol][incremental integer], find a free id.
+	E.g. symbol for Plasmid model could be "Pl", then id's would be Pl1, Pl2, Pl3 etc
+	:param model: The model for which to return a free id. Must have a "symbol" attribute.
+	:return: a free id
+	"""
 	prefix = model.symbol
 	prefix_len = len(prefix)
-	slist = model.objects.values_list("name", flat=True)
+	slist = model.objects.values_list("name", flat=True)  # Get all the currently used names
+	# Figure out which numbers are currently in use
+	# Filter out any names that do not adhere to the naming scheme and save the number part of any that do adhere
 	numbers = [int(x[prefix_len:]) for x in slist if x[:prefix_len] == prefix and x[prefix_len:].isdecimal()]
 	if numbers:
-		return f"{prefix}{sorted(numbers)[-1] + 1}"
-	else:
+		# return a name thats 1 higher than the largets number
+		return f"{prefix}{max(numbers) + 1}"
+	else:  # if no name currently adheres to the naming scheme then we start from 1
 		return f"{prefix}1"
 
 

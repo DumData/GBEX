@@ -2,7 +2,7 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-  mode: "development",
+  mode: "production",
   entry: ["./src/index.jsx"],
   output: { filename: 'bundle.js', path: path.resolve(__dirname, 'dist'), publicPath: '/static/' },
   module: {
