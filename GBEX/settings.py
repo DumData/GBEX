@@ -1,12 +1,10 @@
 import os
 import logging
-import ldap
-from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
 
 ADD_REVERSION_ADMIN = True  # Django Reversion
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY')
-ALLOWED_HOSTS = os.environ.get('DOMAIN').split(",")
+ALLOWED_HOSTS = [os.environ.get('DOMAIN')]
 
 if os.environ.get('DEV_PROD') == 'local_dev':
 	DEBUG = True
@@ -28,17 +26,8 @@ else:
 LOGIN_URL = '/accounts/login/'
 LOGOUT_REDIRECT_URL = '/'
 
-AUTH_LDAP_SERVER_URI = "ldap://win.dtu.dk"
-AUTH_LDAP_USER_DN_TEMPLATE = 'cn=%(user)s,ou=BIO,ou=DTUBaseUsers,dc=win,dc=dtu,dc=dk'
-AUTH_LDAP_USER_ATTR_MAP = {"first_name": "givenName", "last_name": "sn", 'email': 'mail'}
-AUTH_LDAP_BIND_AS_AUTHENTICATING_USER = True
-AUTH_LDAP_GROUP_SEARCH = LDAPSearch("ou=SecurityGroups,ou=BIO,ou=DTUBasen,dc=win,dc=dtu,dc=dk",ldap.SCOPE_SUBTREE, "(objectClass=groupOfNames)")
-AUTH_LDAP_GROUP_TYPE = GroupOfNamesType()
-AUTH_LDAP_REQUIRE_GROUP = 'cn=BIO-PSB-Biotherapeutic-Glycoengineering-and-Immunology-41518,ou=SecurityGroups,ou=BIO,ou=DTUBasen,dc=win,dc=dtu,dc=dk'
-
 AUTHENTICATION_BACKENDS = (
 	'django.contrib.auth.backends.ModelBackend',
-	'django_auth_ldap.backend.LDAPBackend',
 )
 
 INSTALLED_APPS = [
