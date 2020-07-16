@@ -11,8 +11,24 @@ from .models import BaseOption, GBEXModelBase, AbstractBatch, default_order, def
 menu_label = "Inventory"
 
 
+class Plasmid(GBEXModelBase):
+	Description = models.TextField(blank=True, null=True)
+	Genbank_file = ResumableFileField(blank=True, null=True, upload_to=get_upload_path, max_length=500)
+
+	menu_label = menu_label
+	order = [*default_order, 'Description', 'Genbank_file', 'Batches']
+	symbol = "PL"
+	col_display_func_dict = {
+		'Batches': lambda item: f"<a href='{reverse('list_PlasmidBatch', kwargs=dict(parent_pk=item.pk))}'>{item.plasmidbatch_set.filter(archived=False).count()} batches</a>",
+		'Genbank_file': lambda item: f"<a href='/downloads/{item.Genbank_file}'>{str(item.Genbank_file).split('/')[-1]}</a>",
+	}
+
+	col_html_string = ['Genbank_file', 'Batches']
+	col_read_only = [*default_readonly, 'Batches']
+
+
 class PlasmidBatch(AbstractBatch):
-	Parent = models.ForeignKey("Plasmid", on_delete=models.PROTECT)
+	Parent = models.ForeignKey(Plasmid, on_delete=models.PROTECT)
 	Barcode = models.TextField(blank=True, null=True)
 	SequenceVerified = models.BooleanField(default=False)
 
@@ -21,23 +37,6 @@ class PlasmidBatch(AbstractBatch):
 	symbol = "PL_Batch"
 
 	col_read_only = [*default_readonly, 'Parent']
-
-
-class Plasmid(GBEXModelBase):
-	Description = models.TextField(blank=True, null=True)
-	Genbank_file = ResumableFileField(blank=True, null=True, upload_to=get_upload_path, max_length=500)
-
-	menu_label = menu_label
-	order = [*default_order, 'Description', 'Genbank_file', 'Batches']
-	symbol = "PL"
-	batchmodel = PlasmidBatch
-	col_display_func_dict = {
-		'Batches': lambda item: f"<a href='{reverse('list_PlasmidBatch', kwargs=dict(parent_pk=item.pk))}'>{item.plasmidbatch_set.filter(archived=False).count()} batches</a>",
-		'Genbank_file': lambda item: f"<a href='/downloads/{item.Genbank_file}'>{str(item.Genbank_file).split('/')[-1]}</a>",
-	}
-
-	col_html_string = ['Genbank_file', 'Batches']
-	col_read_only = [*default_readonly, 'Batches']
 
 
 class SpeciesOption(BaseOption):
