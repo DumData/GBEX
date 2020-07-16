@@ -60,4 +60,3 @@ There are a few base models that need to be used:
 ### Todos
 Move models col_display_func_dict into helpers.field_to_string for many2many fields
 Make a custom thing to check on delete whether object is used in Many-to-many relation and if so, prevent deletion
-
