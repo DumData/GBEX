@@ -64,7 +64,6 @@ class BaseOption(models.Model):
 class AbstractBatch(GBEXModelBase):
 	# instanced of this need to have a foreignkey link to a GBEXModel
 	# Parent = models.ForeignKey(x, on_delete=models.PROTECT)
-	# "batchmodel = thismodel" needs to be set the parent
 	model_kind = "GBEX_Batch"  # indicate that this is a frontend item
 
 	class Meta:
