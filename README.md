@@ -17,11 +17,11 @@ Then you should be able to visit:
    4) OpenAPI redoc: http://localhost/redoc
 
 ### Docs (work in progress):
-Custom instance changes:
+"Custom instance changes" aka "What you need to do run your own GBEX":
   * Nearly all changes of a custom GBEX instance should be made to "GBEX_app/models"
-  * Also the hidden files .env and .env_not_docker may need to be adjusted  
+  * Also the (hidden) files .env and .env_not_docker may need to be adjusted  
 
-There are a few base models that need to be used:
+There are a few base models that should to be used:
 * Profile in "GBEX_app/models/models.py"
   * This model is used to attach a required "table_settings" json object that is used by the frontend to save personalized user settings
 * BaseOption
