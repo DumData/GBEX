@@ -1,5 +1,4 @@
 from django.contrib.auth.models import User
-from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.urls import reverse_lazy
 
@@ -9,7 +8,7 @@ from dal import autocomplete
 # Profile model for storing user settings in a JSON field
 class Profile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
-	table_settings = JSONField()
+	table_settings = models.JSONField()
 
 # some defaults for quickly making GBEXModels
 default_order = ['id', 'name', 'responsible']

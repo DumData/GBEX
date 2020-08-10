@@ -5,6 +5,7 @@ from django.forms import modelform_factory, modelformset_factory
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.template.defaultfilters import striptags
 from django.utils.translation import ugettext
 from django.views.generic import TemplateView, CreateView, UpdateView, View
 from django.views.generic.base import TemplateResponseMixin, ContextMixin
@@ -167,6 +168,7 @@ class GBEXList(TemplateResponseMixin, ContextMixin, View):
 			url_kwargs = {'parent_pk': parent_pk}
 
 		context['create_url'] = reverse(f"create_{mnl}", kwargs=url_kwargs)
+		context['export_excel_url'] = reverse(f"export_{mnl}", kwargs=url_kwargs)
 		context['data'] = model_to_list_list(self.model.objects.filter(**datafilter))
 
 		context['table_settings'] = request.user.profile.table_settings
@@ -216,11 +218,11 @@ class GBEXAutocomplete(Select2QuerySetView):
 class ExcelExportView(View):
 	model = None
 
-	def get(self, request, *args, **kwargs):
-		if 'rids' in kwargs.keys():
-			# find alle model instances med et id i rids OG som er i namespace
-			ids = kwargs['rids'].split(",")
-			objects = self.model.objects.filter(id__in=ids)
+	def post(self, request, *args, **kwargs):
+		rids = loads(request.body)['rids']
+		if rids:
+			# find all model instances with an id in rids
+			objects = self.model.objects.filter(id__in=rids)
 		else:
 			# return all model instances from namespace
 			datafilter = {'archived': False}
@@ -237,7 +239,7 @@ class ExcelExportView(View):
 
 		ws.append(self.model.order)
 		for row in data:
-			ws.append(row)
+			ws.append([striptags(x) for x in row])  # We are removing all HTML tags...THIS MAY NOT ALWAYS BE DESIRED
 
 		tab = Table(displayName="Table1", ref=f"A1:{get_column_letter(len(self.model.order))}{len(data)}")
 		style = TableStyleInfo(

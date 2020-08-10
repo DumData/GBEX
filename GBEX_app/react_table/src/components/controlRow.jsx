@@ -88,6 +88,29 @@ export default class ControlRow extends React.PureComponent<Props, State> {
     e.preventDefault();
   }
 
+  downloadExcel = (ids: Array=[]) => {
+    let myheaders = new Headers()
+    myheaders.append("X-CSRFToken", window.csrftoken)
+    myheaders.append("Accept", "application/json, */*")
+    myheaders.append("Content-Type", "application/json")
+    fetch(
+        window.export_excel_url, {
+          method: 'post',
+          credentials: 'include',
+          headers: myheaders,
+          body: JSON.stringify({rids: ids})
+        }).then(response => response.blob())
+        .then(blob => {
+          let url = window.URL.createObjectURL(blob);
+          let a = document.createElement('a');
+          a.href = url;
+          a.download = "export.xlsx";
+          document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+          a.click();
+          a.remove();  //afterwards we remove the element again
+        }).catch(error => console.log(error));
+  }
+
   render() {
     const noneselected = this.props.rowsSelected.size==0  // track whether buttons which deal with selection should be enabled
     let bulk_edit_classs = "btn btn-info btn-sm dropdown-toggle"
@@ -115,8 +138,8 @@ export default class ControlRow extends React.PureComponent<Props, State> {
               <ul className="dropdown-menu">{window.columns.slice(2).map(v => <li key={v}><a onClick={this.props.toggleVisibleCols} data-column={v}>{this.props.columnVisible.includes(v) ? "hide " : "show "}{v}</a></li>)}</ul>
             </ButtonGroup>
             <ButtonGroup>
-              <Button bsSize="sm" bsStyle="primary" onClick={() => window.location.href = window.location.href + "exportexcel/"}>Download table <Glyphicon glyph="cloud-download" /></Button>
-              <Button bsSize="sm" bsStyle="primary" disabled={noneselected} onClick={() => window.location.href = window.location.href + "exportexcel/" + Array.from(this.props.rowsSelected).join(",")}>Download selected <Glyphicon glyph="cloud-download" /></Button>
+              <Button bsSize="sm" bsStyle="primary" onClick={() => this.downloadExcel()}>Download table <Glyphicon glyph="cloud-download" /></Button>
+              <Button bsSize="sm" bsStyle="primary" disabled={noneselected} onClick={() => this.downloadExcel(Array.from(this.props.rowsSelected))}>Download selected <Glyphicon glyph="cloud-download" /></Button>
             </ButtonGroup>
           </ButtonToolbar>
         </div>

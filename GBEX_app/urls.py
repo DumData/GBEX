@@ -33,7 +33,6 @@ def url_gen(model, kind):
 		path(f'{path_prefix}/bulkupdate/<column>/<rids>', BulkUpdateView.as_view(model=model, widgets=model.widgets)),
 		path(f'{path_prefix}/bulkupload/', BulkUploadView.as_view()),
 		path(f'{path_prefix}/exportexcel/', ExcelExportView.as_view(model=model), name=f'export_{mnl}'),
-		path(f'{path_prefix}/exportexcel/<rids>', ExcelExportView.as_view(model=model), name=f'export_{mnl}'),
 		path(f'{path_prefix}/archive/<rids>', ArchiveView.as_view(model=model), name=f'archive_{mnl}'),
 		path(f'{path_prefix}/create', GBEXCreateView.as_view(model=model, form_class=form_class), name=f'create_{mnl}'),
 		path(f'{path_prefix}/autocomplete/', GBEXAutocomplete.as_view(model=model, search_fields=["name"]), name=f'{mnl}-autocomplete'),

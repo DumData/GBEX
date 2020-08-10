@@ -29,6 +29,7 @@
 {% block page_js_block %}
     <script>
         var createurl = "{{ create_url }}";
+        var export_excel_url = "{{ export_excel_url }}";
         var columns = {{ model_order|safe }};
         var data = {{ data|safe }};
         var whodis = "{{ model_name }}";
