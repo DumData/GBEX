@@ -30,6 +30,8 @@
     <script>
         var createurl = "{{ create_url }}";
         var export_excel_url = "{{ export_excel_url }}";
+        var archive_url = "{{ archive_url }}";
+        var bulkedit_url = "{{ bulkedit_url }}";
         var columns = {{ model_order|safe }};
         var data = {{ data|safe }};
         var whodis = "{{ model_name }}";
@@ -45,7 +47,7 @@
         //this is for bulk update
         function bulk_text_apply() {
             const inps = $(":input[name]:visible", $("#bulk_form_set_form")); //get all visible inputs with a name in bulk form
-            const text_array = $('#formBasicText').val().split(/\r?\n/); //get the line seperated text form the text form
+            const text_array = $('#formBasicText').val().split(/\r?\n/); //get the line separated text form the text form
 
             // loop over form elements and handle each one individually
             for (let i=0; i<inps.length; i++) {
@@ -110,10 +112,14 @@
                     }
                 } else {
                     //its not select2
-                    this_form_el.val(text_array[i]);
+                    //this_form_el.val(text_array[i]); this stopped working...did django start adding integer values for selects?
+                    this_form_el.children().filter(function() {
+                        return this.text == text_array[i];
+                    }).attr('selected', true);
                     //check if it got set
-                    if (this_form_el.val() != text_array[i]) {
-                        alert("Line " + i+1 + ": " + text_array[i] + ". Not valid value.")
+                    //if (this_form_el.val() != text_array[i]) {  this stopped working...did django start adding integer values for selects?
+                    if (this_form_el.find("option:selected").text() != text_array[i]) {
+                        alert("Line " + (i+1) + ": " + text_array[i] + ". Not valid value.")
                     }
                 }
             }
