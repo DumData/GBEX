@@ -54,6 +54,7 @@ There are a few base models that should to be used:
 
 ### Changelog
 * (21/08/2020) Fixed bugs with row selection functions when too many rows were selected
+* (21/08/2020) Fixed various minor bugs in bulk edit
 * (15/07/2020) Added Batch concept
 * (14/07/2020) Archive feature: Implemented so it simply hides archived items on list pages. They can still be linked and found in link searches.
 * (14/07/2020) Added User model to the REST API
