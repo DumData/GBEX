@@ -4,14 +4,14 @@
 
 {% block page_css_block %}
     <link href="{% static 'admin/css/vendor/select2/select2.min.css' %}" type="text/css" media="all" rel="stylesheet">
+	<link href="{% static 'admin/css/autocomplete.css' %}" type="text/css" media="screen" rel="stylesheet">
     <link href="{% static 'autocomplete_light/select2.css' %}" type="text/css" media="all" rel="stylesheet">
     <link href="{% static 'GBEX_app/select2-bootstrap.css' %}" rel="stylesheet">
 {% endblock %}
 {% block page_header_js_block %}
-    <script type="text/javascript" src="{% static 'autocomplete_light/jquery.init.js' %}"></script>
-    <script type="text/javascript" src="{% static 'autocomplete_light/autocomplete.init.js' %}"></script>
     <script type="text/javascript" src="{% static 'admin/js/vendor/select2/select2.full.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'autocomplete_light/forward.js' %}"></script>
+	<script type="text/javascript" src="{% static 'autocomplete_light/autocomplete_light.js'  %}"></script>
+	<script type="text/javascript" src="{% static 'autocomplete_light/i18n/en.js' %}"></script>
     <script type="text/javascript" src="{% static 'autocomplete_light/select2.js' %}"></script>
     <script>
         var django = {

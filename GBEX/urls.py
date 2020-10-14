@@ -3,8 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.urls import path, include, re_path
 
 from rest_framework import routers, permissions
-from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
+from drf_yasg2.views import get_schema_view
+from drf_yasg2 import openapi
 
 from decorator_include import decorator_include
 

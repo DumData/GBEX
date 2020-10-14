@@ -44,7 +44,7 @@ INSTALLED_APPS = [
 	'widget_tweaks',
 	'rest_framework',
 	'rest_framework.authtoken',
-	'drf_yasg',
+	'drf_yasg2',
 	'GBEX_app.apps.GbexAppConfig',
 	'GBEX_bigfiles.apps.GbexBigfilesConfig',
 	'django_filters',
