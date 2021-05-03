@@ -35,7 +35,7 @@
     var $ = this;
     $.files = [];
     $.defaults = {
-      chunkSize:10*1024*1024,
+      chunkSize:1024*1024*1024,  // if there are issues with uploading large files, this is a good place to start tweaking
       forceChunkSize:false,
       simultaneousUploads:3,
       fileParameterName:'file',

@@ -2,6 +2,7 @@ import os
 import logging
 
 ADD_REVERSION_ADMIN = True  # Django Reversion
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY')
 ALLOWED_HOSTS = [os.environ.get('DOMAIN')]

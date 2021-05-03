@@ -112,15 +112,23 @@
                     }
                 } else {
                     //its not select2
-                    //this_form_el.val(text_array[i]); this stopped working...did django start adding integer values for selects?
+                    this_form_el.val(text_array[i]);
+                    //check if it got set
+                    if (this_form_el.val() != text_array[i]) {
+                        alert("Line " + (i+1) + ": " + text_array[i] + ". Not valid value.")
+                    }
+                    /*
+                    the above stopped working at some point...then I changed it to the below code.
+                    That code, however, only works for <Select> and not for <Text> and others, so when I
+                    was fixing that, I noticed that the old code works again...
+
                     this_form_el.children().filter(function() {
                         return this.text == text_array[i];
                     }).attr('selected', true);
-                    //check if it got set
-                    //if (this_form_el.val() != text_array[i]) {  this stopped working...did django start adding integer values for selects?
                     if (this_form_el.find("option:selected").text() != text_array[i]) {
                         alert("Line " + (i+1) + ": " + text_array[i] + ". Not valid value.")
                     }
+                    */
                 }
             }
         }

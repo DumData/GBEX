@@ -53,10 +53,11 @@ There are a few base models that should to be used:
 
 
 ### Changelog
+* (03/05/2021) Reverted bulk edit code. 
 * (21/08/2020) Fixed bugs with row selection functions when too many rows were selected
 * (21/08/2020) Fixed various minor bugs in bulk edit
 * (15/07/2020) Added Batch concept
-* (14/07/2020) Archive feature: Implemented so it simply hides archived items on list pages. They can still be linked and found in link searches.
+* (14/07/2020) Archive feature: Implemented. It simply hides archived items on list pages. They can still be linked and found in link searches.
 * (14/07/2020) Added User model to the REST API
 
 ### Todos
@@ -64,3 +65,5 @@ There are a few base models that should to be used:
 * Make a custom thing to check on delete whether object is used in Many-to-many relation and if so, prevent deletion
 * Update to React 17 (switch code in search control to this https://reactjs.org/blog/2018/06/07/you-probably-dont-need-derived-state.html#what-about-memoization)
 * Update React Bootstrap to >4
+* Inform frontend how to sort each column (numbers/dates/strings)
+* Give frontend a "nice name" for columns
