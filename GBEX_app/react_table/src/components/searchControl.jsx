@@ -2,6 +2,7 @@
 "use strict";
 
 import React from 'react'
+import { PureComponent } from 'react';
 import {Button, Glyphicon, ButtonGroup, ButtonToolbar } from 'react-bootstrap'
 
 function arraysEqual(a, b) {
@@ -29,7 +30,7 @@ type Props = {
   scrollToExtreme: Function
 }
 
-export default class SearchControl extends React.PureComponent<Props, State> {
+export default class SearchControl extends PureComponent<Props, State> {
   state = {
     rowSearchHighlightIndex: 0
   }

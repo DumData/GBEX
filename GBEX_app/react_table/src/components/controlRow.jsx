@@ -2,6 +2,7 @@
 "use strict";
 
 import React from 'react'
+import { PureComponent } from 'react';
 import {Button, ButtonGroup, ButtonToolbar, Glyphicon, Modal, Form, FormGroup, FormControl, HelpBlock, Grid, Row, Col} from 'react-bootstrap'
 import SearchControl from './searchControl'
 import Spinner from './spinner'
@@ -33,17 +34,17 @@ function createMarkup(value) {
   return {__html: value};
 }
 
-export default class ControlRow extends React.PureComponent<Props, State> {
+export default class ControlRow extends PureComponent<Props, State> {
   state = {
     showModal: false,     // show bulk update modal
     currentColName: "",   // column name used for col visibility and bulk update
-    form_text: "",        // thex text of bulk update form
+    form_text: "",        // the text of bulk update form
     bulk_text_field: "",  // the user entered text field text
     showSpinner: false,   // whether or not to show the loading spinner
   }
 
   getValidationState() {
-    if (this.state.bulk_text_field.split('\n').length == (this.state.form_text.match(/form-group/g) || []).length) return 'success';
+    if (this.state.bulk_text_field.split('\n').length === (this.state.form_text.match(/form-group/g) || []).length) return 'success';
     else return 'error';
   }
 

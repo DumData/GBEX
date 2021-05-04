@@ -2,6 +2,7 @@
 "use strict";
 
 import React from 'react'
+import { PureComponent } from 'react';
 import { Popover, FormGroup, Button } from 'react-bootstrap'
 import { findDOMNode } from 'react-dom'
 
@@ -19,7 +20,7 @@ type Props = {
   onCommit: Function,
 }
 
-export default class MyEditor extends React.PureComponent<Props, State> {
+export default class MyEditor extends PureComponent<Props, State> {
   state = {
     form_text: "",
     updatelink: ""

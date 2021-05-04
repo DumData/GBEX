@@ -1,10 +1,11 @@
 //@flow
 "use strict";
 
-import React from 'react';
+import React from 'react'
+import { PureComponent } from 'react';
 import { Glyphicon } from 'react-bootstrap'
 import { AutoSizer, MultiGrid } from 'react-virtualized';
-import MyEditor from './myEditor';
+import MyEditor from './myEditor.jsx';
 import 'react-virtualized/styles.css'
 
 function createMarkup(value) {
@@ -44,7 +45,7 @@ type Props = {
   doCommit: Function,
 }
 
-export default class RVMultiGrid extends React.PureComponent<Props, State> {
+export default class RVMultiGrid extends PureComponent<Props, State> {
   state = {
     scrollToColumn: 1,            // currently scrolled to column
     scrollToRow: 1,               // currently scrolled to row
@@ -200,7 +201,7 @@ export default class RVMultiGrid extends React.PureComponent<Props, State> {
     }
   };
 
-  _getColumnWidth = ({index} : Object) => {
+  _getColumnWidth = ({index}: Object) => {
     if (index>0) {
       return this.props.columnWidths[this.props.columnVisible[index]]
     } else {

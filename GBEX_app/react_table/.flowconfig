@@ -4,6 +4,8 @@
 
 [libs]
 
+[lints]
+
 [options]
 
-[lints]
+[strict]

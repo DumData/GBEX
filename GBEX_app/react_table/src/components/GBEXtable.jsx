@@ -1,9 +1,10 @@
 //@flow
 "use strict";
 
-import React from 'react';
-import ControlRow from './controlRow'
-import RVMultiGrid from './multiGrid'
+import React from 'react'
+import { PureComponent } from 'react';
+import ControlRow from './controlRow.jsx'
+import RVMultiGrid from './multiGrid.jsx'
 
 function checkEachColumn(searchColumns: Object, currentRow: Array<string>): boolean {
   return Object.entries(searchColumns).every(([columnName, columnSearchString]) => { // check if every search column string passes
@@ -84,7 +85,7 @@ type State = {
   searchCursor: string,
 }
 
-export default class GBEXtable extends React.PureComponent<Props, State> {
+export default class GBEXtable extends PureComponent<Props, State> {
   state = {
     data: window.data.slice(),                                      // all the data, this will be updated on succesful submits
     filtered_sorted_data: sortByColumn("ASC", 1, window.data.slice()), // this is the filtered sorted data which will be updated on filter/sort commands

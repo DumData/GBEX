@@ -53,7 +53,7 @@ There are a few base models that should to be used:
 
 
 ### Changelog
-* (03/05/2021) Reverted bulk edit code. 
+* (03/05/2021) Reverted bulk edit code.
 * (21/08/2020) Fixed bugs with row selection functions when too many rows were selected
 * (21/08/2020) Fixed various minor bugs in bulk edit
 * (15/07/2020) Added Batch concept
@@ -63,7 +63,19 @@ There are a few base models that should to be used:
 ### Todos
 * Move models col_display_func_dict into helpers.field_to_string for many2many fields
 * Make a custom thing to check on delete whether object is used in Many-to-many relation and if so, prevent deletion
-* Update to React 17 (switch code in search control to this https://reactjs.org/blog/2018/06/07/you-probably-dont-need-derived-state.html#what-about-memoization)
-* Update React Bootstrap to >4
 * Inform frontend how to sort each column (numbers/dates/strings)
 * Give frontend a "nice name" for columns
+
+### Considerations
+* (04-05-2021) Born from a desire to upgrade to React 17 and Bootstrap 4, I took a deep dive.  
+  * I found that react 17 is blocked by react-virtualized. A PM is ready, but for some reason not merged...  
+  * I then wanted to update the build system and doing that caused me to evaluate typescript and create react app 
+    * It always takes some time to get back into JS development due to the complexity of the dev/build environment 
+	  with webpack, eslint, babel, etc. So I took a look a "create react app" and through that also typescript.  
+	  While its certainly easier to set things up with cra, it also came with some head scratching.  
+	  I solved it, but as far as I tell, it doesn't really offer much after I have already done the work of setting up
+	  a build system.
+	  Typescript looks nice, and I would probably choose it over flow today, but again it doesn't seem to offer any
+	  substantial reward.
+  * I will keep an eye on react-virtualized and see if they move forward in the next year. If not, I will probably
+	investigate an alternative table solution.
