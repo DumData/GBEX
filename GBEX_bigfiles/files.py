@@ -2,6 +2,7 @@ import os
 from urllib.parse import urljoin
 from django.conf import settings
 from django.core.files.storage import get_storage_class
+from django.utils.text import get_valid_filename
 
 
 class ResumableFile:
@@ -18,27 +19,17 @@ class ResumableFile:
 	@property
 	def chunk_names(self):
 		"""Iterates over all stored chunks."""
-		chunks = []
-		files = sorted(self.storage.listdir('')[1])
-		for f in files:
-			if f.startswith('{}{}'.format(self.filename, self.chunk_suffix)):
-				chunks.append(f)
-		return chunks
+		return [f for f in sorted(self.storage.listdir('')[1]) if f.startswith(f'{self.filename}{self.chunk_suffix}')]
 
 	@property
 	def current_chunk_name(self):
-		return "%s%s%s" % (
-			self.filename,
-			self.chunk_suffix,
-			self.kwargs.get('resumableChunkNumber').zfill(4)
-		)
+		return f"{self.filename}{self.chunk_suffix}{self.kwargs.get('resumableChunkNumber').zfill(9)}"
 
 	def chunks(self):
 		"""Iterates over all stored chunks."""
 		files = sorted(self.storage.listdir('')[1])
 		for f in files:
-			if f.startswith('{}{}'.format(
-					self.filename, self.chunk_suffix)):
+			if f.startswith(f'{self.filename}{self.chunk_suffix}'):
 				yield self.storage.open(f, 'rb').read()
 
 	def delete_chunks(self):
@@ -54,15 +45,12 @@ class ResumableFile:
 	@property
 	def filename(self):
 		"""Gets the filename."""
-		filename = self.kwargs.get('resumableFilename')
-		if '/' in filename:
-			raise Exception('Invalid filename')
-		return "%s_%s" % (self.kwargs.get('resumableTotalSize'), filename)
+		filename = get_valid_filename(self.kwargs.get('resumableFilename'))
+		return f"{self.kwargs.get('resumableTotalSize')}_{filename}"
 
 	@property
 	def is_complete(self):
 		"""Checks if all chunks are already stored."""
-		print("resumableTotalSize", int(self.kwargs.get('resumableTotalSize')), ": size", self.size)
 		return int(self.kwargs.get('resumableTotalSize')) == self.size
 
 	def process_chunk(self, file):
@@ -73,10 +61,7 @@ class ResumableFile:
 	@property
 	def size(self):
 		"""Gets chunks size."""
-		size = 0
-		for chunk in self.chunk_names:
-			size += self.storage.size(chunk)
-		return size
+		return sum([self.storage.size(chunk) for chunk in self.chunk_names])
 
 
 def ensure_dir(f):
